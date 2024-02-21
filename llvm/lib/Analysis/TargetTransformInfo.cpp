@@ -9,6 +9,7 @@
 #include "llvm/Analysis/TargetTransformInfo.h"
 #include "llvm/Analysis/CFG.h"
 #include "llvm/Analysis/LoopIterator.h"
+#include "llvm/Analysis/TargetLibraryInfo.h"
 #include "llvm/Analysis/TargetTransformInfoImpl.h"
 #include "llvm/IR/CFG.h"
 #include "llvm/IR/Dominators.h"
@@ -867,6 +868,18 @@ TargetTransformInfo::getOperandInfo(const Value *V) {
     OpInfo = OK_UniformValue;
 
   return {OpInfo, OpProps};
+}
+
+InstructionCost TargetTransformInfo::getVecLibCallCost(
+    const int OpCode, const TargetLibraryInfo *TLI, VectorType *VecTy,
+    TTI::TargetCostKind CostKind) {
+  Type *ScalarTy = VecTy->getScalarType();
+  LibFunc Func;
+  if (TLI->getLibFunc(OpCode, ScalarTy, Func) &&
+      TLI->isFunctionVectorizable(TLI->getName(Func), VecTy->getElementCount()))
+    return getCallInstrCost(nullptr, VecTy, {ScalarTy, ScalarTy}, CostKind);
+
+  return InstructionCost::getInvalid();
 }
 
 InstructionCost TargetTransformInfo::getArithmeticInstrCost(

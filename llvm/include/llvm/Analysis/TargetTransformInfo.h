@@ -1255,6 +1255,13 @@ public:
       ArrayRef<const Value *> Args = ArrayRef<const Value *>(),
       const Instruction *CxtI = nullptr) const;
 
+  /// Returns the cost of a call when a target has a vector library function for
+  /// the given \p VecTy, otherwise an invalid cost.
+  InstructionCost getVecLibCallCost(const int OpCode,
+                                    const TargetLibraryInfo *TLI,
+                                    VectorType *VecTy,
+                                    TTI::TargetCostKind CostKind);
+
   /// Returns the cost estimation for alternating opcode pattern that can be
   /// lowered to a single instruction on the target. In X86 this is for the
   /// addsub instruction which corrsponds to a Shuffle + Fadd + FSub pattern in
