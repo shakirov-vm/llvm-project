@@ -1475,6 +1475,7 @@ static unsigned getArchPointerBitWidth(llvm::Triple::ArchType Arch) {
   case llvm::Triple::r600:
   case llvm::Triple::renderscript32:
   case llvm::Triple::riscv32:
+  case llvm::Triple::riscsim:
   case llvm::Triple::shave:
   case llvm::Triple::sparc:
   case llvm::Triple::sparcel:
@@ -1629,6 +1630,7 @@ Triple Triple::get64BitArchVariant() const {
   case Triple::r600:
   case Triple::shave:
   case Triple::sparcel:
+  case Triple::riscsim:
   case Triple::tce:
   case Triple::tcele:
   case Triple::xcore:
