@@ -11,9 +11,17 @@ include "llvm/Target/Target.td"
 include "RISCSimRegisterInfo.td"
 
 //===----------------------------------------------------------------------===//
+// Instruction Descriptions
+//===----------------------------------------------------------------------===//
+
+include "RISCSimInstrInfo.td"
+
+def RISCSimInstrInfo : InstrInfo;
+
+//===----------------------------------------------------------------------===//
 // Target Declaration
 //===----------------------------------------------------------------------===//
 
 def RISCSim : Target {
-//  let InstructionSet = RISCSimInstrInfo;
+  let InstructionSet = RISCSimInstrInfo;
 }
