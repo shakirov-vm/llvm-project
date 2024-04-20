@@ -1,5 +1,6 @@
 add_llvm_component_library(LLVMRISCSimDesc
   RISCSimMCTargetDesc.cpp
+  RISCSimMCAsmInfo.cpp
 
   LINK_COMPONENTS
   MC
