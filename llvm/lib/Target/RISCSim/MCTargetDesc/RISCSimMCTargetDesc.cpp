@@ -10,6 +10,12 @@
 #include "llvm/MC/TargetRegistry.h"
 #include "llvm/Support/ErrorHandling.h"
 
+#include "RISCSimMCTargetDesc.h"
+#include "RISCSimInfo.h"
+#include "RISCSimInstPrinter.h"
+#include "RISCSimTargetStreamer.h"
+#include "llvm/Support/FormattedStream.h"
+
 using namespace llvm;
 
 #define GET_REGINFO_MC_DESC
@@ -52,6 +58,24 @@ static MCAsmInfo *createRISCSimMCAsmInfo(const MCRegisterInfo &MRI,
   return MAI;
 }
 
+static MCInstPrinter *createRISCSimMCInstPrinter(const Triple &T,
+                                              unsigned SyntaxVariant,
+                                              const MCAsmInfo &MAI,
+                                              const MCInstrInfo &MII,
+                                              const MCRegisterInfo &MRI) {
+  return new RISCSimInstPrinter(MAI, MII, MRI);
+}
+
+RISCSimTargetStreamer::RISCSimTargetStreamer(MCStreamer &S) : MCTargetStreamer(S) {}
+RISCSimTargetStreamer::~RISCSimTargetStreamer() = default;
+
+static MCTargetStreamer *createTargetAsmStreamer(MCStreamer &S,
+                                                 formatted_raw_ostream &OS,
+                                                 MCInstPrinter *InstPrint,
+                                                 bool isVerboseAsm) {
+  return new RISCSimTargetStreamer(S);
+}
+
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeRISCSimTargetMC() {
   RISCSIM_DUMP_MAGENTA
   Target &TheRISCSimTarget = getTheRISCSimTarget();
@@ -62,4 +86,8 @@ extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeRISCSimTargetMC() {
   TargetRegistry::RegisterMCInstrInfo(TheRISCSimTarget, createRISCSimMCInstrInfo);
   // Register the MC subtarget info.
   TargetRegistry::RegisterMCSubtargetInfo(TheRISCSimTarget, createRISCSimMCSubtargetInfo);
+  // Register the MC inst printer
+  TargetRegistry::RegisterMCInstPrinter(TheRISCSimTarget, createRISCSimMCInstPrinter);
+  TargetRegistry::RegisterAsmTargetStreamer(TheRISCSimTarget,
+                                            createTargetAsmStreamer);
 }

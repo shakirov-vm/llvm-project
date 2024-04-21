@@ -38,6 +38,7 @@ def simm14 : Operand<i32>, ImmLeaf<i32, [{return isInt<14>(Imm);}]> {
 // export CLANG=/home/id74/concurrency/LLVM-project/llvm-project/build/bin/clang
 // ./build/bin/clang -print-targets
 // ${CLANG} -print-targets
+// ./build/bin/llc simple_test.ll -march riscsim
 
 //===----------------------------------------------------------------------===//
 // Arithmetic & Logical instructions
@@ -102,8 +103,9 @@ def mem32 : Operand<i32> {
   let OperandType = "OPERAND_MEMORY";
   let PrintMethod = "printMemOperand";
 }
-def AddrShift4 : ComplexPattern<iPTR, 2, "selectMemRegAddrISH4", [frameindex]>;
-
+// selectMemRegAddrISH4 don't implemented yet
+//def AddrShift4 : ComplexPattern<iPTR, 2, "selectMemRegAddrISH4", [frameindex]>;
+/*
 // Load instructions
 let mayLoad = 1 in {
 
@@ -129,7 +131,7 @@ let mayStore = 1 in {
   }
 }
 def STORE : LoadInstr<0x29>;
-
+*/
 //===----------------------------------------------------------------------===//
 // Conditional branch instructions
 //===----------------------------------------------------------------------===//
